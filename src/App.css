@@ -1,0 +1,44 @@
+import 'https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap'
+import 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap'
+.Navbar{
+    background:orange !important;
+    
+
+}
+.Font_Ins{
+  font-family: 'Instrument Sans', sans-serif;
+  
+  
+}
+.borderrad{
+  border-radius:50%;
+}
+.borderstroke{
+  border:10px solid white;
+}
+.bg-grayish{
+  background:#d9e3e5;
+}
+.bg-whitish{
+  background:#edf0f0;
+}
+.bg-lightwhite
+{
+ background: #f5f5f5 ;
+}
+.font-Inter{
+  font-family:'Inter',;
+}
+.text-xxs{
+  font-size:11px;
+}
+
+.borderrounded{
+  border-radius:50%;
+}
+html {
+  scroll-behavior: smooth;
+}
+.pimg{
+  max-width:10% !important;
+}
