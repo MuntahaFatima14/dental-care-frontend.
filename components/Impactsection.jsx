@@ -3,7 +3,7 @@ import React from 'react';
 function Impactsection() {
   return (
     <div className=''>
-       <div className="flex flex-col md:flex-row mb-20 justify-center  gap-8  mt-10 mx-14 rounded-3xl bg-white p-5 shadow-2xl">
+      <div className="flex flex-col md:flex-row mb-20 justify-center  gap-8  mt-10 mx-14 rounded-3xl bg-white p-5 shadow-2xl">
         <div className="w-full md:w-1/2">
           <img
             src="./img/Pic2.jpg"
