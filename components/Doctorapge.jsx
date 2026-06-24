@@ -9,7 +9,23 @@ export default function Doctorpage() {
   const [isUploading, setIsUploading] = useState(false);
   const navigate = useNavigate();
 
+  // Unified State Hook tracking all frontend inputs dynamically
+  const [patientData, setPatientData] = useState({
+    name: "",
+    allergies: "",
+    chronicConditions: "",
+    age: "",
+    weight: "",
+    bpSystolic: "",
+    bpDiastolic: ""
+  });
+
   const bloodTypes = ["O (I)", "A (II)", "B (III)", "AB (IV)"];
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setPatientData((prev) => ({ ...prev, [name]: value }));
+  };
 
   /* ---------------- FILE UPLOAD HANDLER ---------------- */
   const handleFileUpload = (e) => {
@@ -30,7 +46,7 @@ export default function Doctorpage() {
     setUploadedFile(file);
   };
 
-  /* ---------------- SUBMIT HANDLER WITH AI INTEGRATION ---------------- */
+  /* ---------------- SUBMIT HANDLER WITH LIVE DATA ATTACHMENT ---------------- */
   const handleSubmit = async () => {
     if (!uploadedFile) {
       alert("Please upload an X-ray image first!");
@@ -39,14 +55,24 @@ export default function Doctorpage() {
 
     setIsUploading(true);
 
-    // Prepare the data for Django
+    // Prepare multipart form payload matching backend configuration requirements
     const formData = new FormData();
-    formData.append('image', uploadedFile); 
+    formData.append("image", uploadedFile);
+    
+    // Fixed: Using JavaScript safe evaluation .trim() with fallback strings
+    const clientName = patientData.name && patientData.name.trim() ? patientData.name.trim() : "Anonymous Patient";
+    const clientAge = patientData.age && patientData.age.trim() ? patientData.age.trim() : "N/A";
+    
+    formData.append("patient_name", clientName);
+    formData.append("age", clientAge);
+    
+    // Package symptoms field combining baseline entries from the form variables safely
+    const symptomSummary = `Allergies: ${patientData.allergies.trim() || "None"}. Chronic: ${patientData.chronicConditions.trim() || "None"}. BP: ${patientData.bpSystolic.trim() || "120"}/${patientData.bpDiastolic.trim() || "80"} mmHg. Weight: ${patientData.weight.trim() || "N/A"}. Blood Type: ${bloodType} ${rh}`;
+    formData.append("symptoms", symptomSummary);
 
     try {
-      // API call to your Django server
-      const response = await fetch('http://127.0.0.1:8000/api/detect/', {
-        method: 'POST',
+      const response = await fetch("http://localhost:8000/api/detect/", {
+        method: "POST",
         body: formData,
       });
 
@@ -54,17 +80,18 @@ export default function Doctorpage() {
 
       const data = await response.json();
       
-      // Pass results and the raw file object to the dashboard
+      // Pass the live text data directly forward to the dashboard
       navigate("/doctordashboard", { 
         state: { 
           detectionResults: data.results, 
-          imageFile: uploadedFile 
+          imageFile: uploadedFile,
+          patientInfo: data.patient_info || { name: clientName, age: clientAge, symptoms: symptomSummary }
         } 
       });
       
     } catch (error) {
-      console.error("Error:", error);
-      alert("Failed to connect to the AI server. Is the Django server running?");
+      console.error("Error during execution:", error);
+      alert("Failed to connect to the AI server. Confirm your Django server is running via terminal.");
     } finally {
       setIsUploading(false);
     }
@@ -119,23 +146,26 @@ export default function Doctorpage() {
           </div>
         </div>
 
-        {/* Patient Vitals Fields */}
+        {/* Patient Vitals Inputs */}
         <div className="space-y-4">
-          <Input label="Full Name" placeholder="John Doe" />
-          <Input label="Allergies" placeholder="Peanuts" />
-          <Input label="Chronic conditions" placeholder="Migraine" />
+          <Input label="Full Name" name="name" value={patientData.name} onChange={handleInputChange} placeholder="John Doe" />
+          <Input label="Allergies" name="allergies" value={patientData.allergies} onChange={handleInputChange} placeholder="Peanuts" />
+          <Input label="Chronic conditions" name="chronicConditions" value={patientData.chronicConditions} onChange={handleInputChange} placeholder="Migraine" />
 
           <div className="grid grid-cols-2 gap-3">
-            <Input label="Your Age" placeholder="23 y/o" />
-            <Input label="Your weight (kg)" placeholder="85 kg" />
+            <Input label="Your Age" name="age" value={patientData.age} onChange={handleInputChange} placeholder="23" />
+            <Input label="Your weight (kg)" name="weight" value={patientData.weight} onChange={handleInputChange} placeholder="85 kg" />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
-            <Input label="Blood pressure (mmHg)" placeholder="120" />
+            <Input label="Blood pressure (mmHg)" name="bpSystolic" value={patientData.bpSystolic} onChange={handleInputChange} placeholder="120" />
             <div>
-              <label className="text-sm text-transparent">.</label>
+              <label className="text-sm text-gray-700 font-medium">Diastolic</label>
               <input
                 type="text"
+                name="bpDiastolic"
+                value={patientData.bpDiastolic}
+                onChange={handleInputChange}
                 placeholder="80"
                 className="mt-1 w-full rounded-xl bg-white px-4 py-3 text-sm border border-gray-300 outline-none focus:ring-2 focus:ring-[#5B8AA0]"
               />
@@ -183,17 +213,22 @@ export default function Doctorpage() {
   );
 }
 
-/* ---------- Reusable Input Component ---------- */
-function Input({ label, placeholder }) {
-  return (
-    <div>
-      {label && <label className="text-sm text-gray-700 font-medium">{label}</label>}
-      <input
-        type="text"
-        placeholder={placeholder}
-        className="mt-1 w-full rounded-xl bg-white px-4 py-3 text-sm border border-gray-300 outline-none focus:ring-2 focus:ring-[#5B8AA0]"
-      />
-    </div>
-  );
+/* ---------- Reusable Input Component Wired up for State Tracking ---------- */
+if (!window.InputComp) {
+  window.InputComp = function Input({ label, name, value, onChange, placeholder }) {
+    return (
+      <div>
+        {label && <label className="text-sm text-gray-700 font-medium">{label}</label>}
+        <input
+          type="text"
+          name={name}
+          value={value}
+          onChange={onChange}
+          placeholder={placeholder}
+          className="mt-1 w-full rounded-xl bg-white px-4 py-3 text-sm border border-gray-300 outline-none focus:ring-2 focus:ring-[#5B8AA0]"
+        />
+      </div>
+    );
+  };
 }
-
+const Input = window.InputComp;

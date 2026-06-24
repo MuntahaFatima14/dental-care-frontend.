@@ -41,7 +41,7 @@ function Header() {
           <a href = "#contact" className="hover:text-blue-600">Contact</a>
          
 
-          <Link to = "/" className="hover:text-blue-600">For Doctors</Link>
+          <Link to = "/" className="hover:text-blue-600">Doctors</Link>
         </nav>
       </div>
 
@@ -51,7 +51,7 @@ function Header() {
           <Link to = "/homepage" className="hover:text-blue-600">Home</Link>
           <a to = "#about" className="hover:text-blue-600">About</a>
           <Link to = "/servicepage" className="hover:text-blue-600">Services</Link>
-          <Link to = "/" className="hover:text-blue-600">For Doctors</Link>
+          <Link to = "/" className="hover:text-blue-600">Doctors</Link>
         </nav>
       )}
     </header>
