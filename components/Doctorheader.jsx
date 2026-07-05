@@ -52,7 +52,7 @@ function DoctorHeader() {
         {/* LOGO */}
         <div className="flex items-center">
           <img
-            src="./img/s.png"
+            src="/img/s.png"
             alt="logo"
             className="w-25 h-20 object-contain"
           />

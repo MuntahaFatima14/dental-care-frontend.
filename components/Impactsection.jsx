@@ -3,25 +3,25 @@ import React from 'react';
 function Impactsection() {
   return (
     <div className=''>
-      <div className="flex flex-col md:flex-row mb-20 justify-center  gap-8  mt-10 mx-14 rounded-3xl bg-white p-5 shadow-2xl">
-        <div className="w-full md:w-1/2">
+      <div className="flex flex-col md:flex-row my-12 md:my-16 justify-center gap-8 mx-4 md:mx-14 lg:mx-auto max-w-6xl rounded-3xl bg-white p-6 md:p-8 shadow-2xl">
+        <div className="w-full md:w-1/2 flex items-center justify-center">
           <img
-            src="./img/Pic2.jpg"
-            alt=""
-            className="shadow-2xl w-full h-auto rounded-md"
+            src="/img/Pic2.jpg"
+            alt="Doctor consulting patient"
+            className="shadow-xl w-full h-auto rounded-2xl object-cover"
           />
         </div>
 
         <div className="w-full md:w-1/2 px-0 md:px-5 ">
           <h2 className="font-bold lg:text-4xl md:text-2xl lg:mb-6 text-center md:text-left">
-            Cavity-Free Living with AI Cavity Detection
+            Disease-Free Living with AI Disease Detection
           </h2>
           <p className="text-gray-700 text-sm md:text-base text-center md:text-left leading-relaxed">
-            Welcome to AI Cavity Detection, your premier destination for
-            cutting-edge AI dentistry and automated cavity detection. Our
+            Welcome to AI Disease Detection, your premier destination for
+            cutting-edge AI dentistry and automated disease detection. Our
             mission is to redefine oral health wisely by harnessing artificial
             intelligence. With a focus on precision and personalized care, we
-            offer state-of-the-art solutions for proactive cavity detection.
+            offer state-of-the-art solutions for proactive disease detection.
             <br />
             <br />
             Our innovative technology empowers dentists with faster and more

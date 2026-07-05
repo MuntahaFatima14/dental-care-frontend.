@@ -5,7 +5,7 @@ import { HiEye, HiEyeOff } from "react-icons/hi";
 function Signin() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-  
+
   // Notice: Django SimpleJWT expects "username" instead of an email property string
   const [formData, setFormData] = useState({
     username: "",
@@ -20,7 +20,8 @@ function Signin() {
     e.preventDefault(); // Stop broken routing behaviors
 
     try {
-      const response = await fetch("http://localhost:8000/api/login/", {
+      const apiBase = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
+      const response = await fetch(`${apiBase}/api/login/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -34,9 +35,10 @@ function Signin() {
       if (response.ok) {
         // Save the token so your dashboard can query MongoDB!
         localStorage.setItem("doctor_token", data.access);
-        
+        localStorage.setItem("doctor_name", formData.username);
+
         alert("Authentication successful!");
-        navigate("/doctorpage"); // Authorized redirect location execution
+        navigate("/patients"); // Authorized redirect location execution
       } else {
         alert(`Authentication Error: ${data.detail || "Invalid credentials provided."}`);
       }
@@ -48,7 +50,7 @@ function Signin() {
 
   return (
     <div className="px-4 md:px-16">
-      <h1 className="text-3xl font-bold mb-2 mt-10 text-center">For Doctor</h1>
+      <h1 className="text-3xl font-bold mb-2 mt-10 text-center"></h1>
 
       <div className="flex flex-col md:flex-row justify-center items-center lg:mx-auto lg:w-4/6 md:mx-0">
         {/* Left: Sign-in form */}
@@ -126,7 +128,7 @@ function Signin() {
         {/* Right: Image */}
         <div className="flex justify-center w-full">
           <img
-            src="./img/pic9.jpeg"
+            src="/img/pic9.jpeg"
             alt="logo"
             className="SignUpImg w-4/5 h-4/5 md:w-4/5 md:h-4/5 borderrad borderstroke shadow-md"
           />

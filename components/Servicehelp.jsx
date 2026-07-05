@@ -6,27 +6,27 @@ export default function ServiceHelp() {
     <section className="bg-[#dce7e9] py-20 px-4 flex justify-center">
       <div
         className="
-          bg-white w-
-          rounded-full
-          flex flex-col md:flex-row justify-content-between items-center
-          px-7 py-7 md:px-7 md:py-7
+          bg-white max-w-4xl w-full
+          rounded-3xl
+          flex flex-col md:flex-row justify-between items-center
+          p-6 md:p-10
           shadow-[0_4px_20px_rgba(0,0,0,0.08)]
-          gap-0
+          gap-8 md:gap-12
         "
       >
         {/* Image Container */}
-        <div className="flex justify-center md:justify-start w-full md:w-auto">
+        <div className="flex justify-center md:justify-start w-full md:w-auto flex-shrink-0">
             <img
-              src="../img/card1.jpg"
+              src="/img/card1.jpg"
               alt="Dentist"
-              className="w-96 h-64 object-cover borderrounded"
+              className="w-80 h-56 md:w-96 md:h-64 object-cover borderrounded"
             />
         </div>
 
         {/* Text Section */}
-        <div className="mt-8 md:mt-0 md:ml-12 text-center md:text-left w-full ">
-          <h2 className="text-3xl md:text-4xl font-bold leading-loose text-gray-900 ">
-            Not Sure Which Service <br></br> You Need?
+        <div className="text-center md:text-left w-full flex-grow">
+          <h2 className="text-3xl md:text-4xl font-bold leading-tight text-gray-900 ">
+            Not Sure Which Service <br className="hidden md:inline"></br> You Need?
           </h2>
 
           <button

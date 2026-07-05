@@ -4,32 +4,32 @@ const services = [
   {
     title: "General Dentistry",
     desc: "Preventive checkups and regular cleanings help avoid serious dental issues.",
-    img: "../img/card1.jpg",
+    img: "/img/card1.jpg",
   },
   {
     title: "Cosmetic Dentistry",
     desc: "Brighten and enhance your smile with whitening, veneers and custom treatments.",
-    img: "../img/card2.jpg",
+    img: "/img/card2.jpg",
   },
   {
     title: "Orthodontics",
     desc: "Braces and Invisalign to align teeth comfortably. Ideal for both teens and adults.",
-    img: "../img/card3.jpg",
+    img: "/img/card3.jpg",
   },
   {
     title: "Pediatric Dentistry",
     desc: "Gentle care for children of all ages. Fun-friendly visits with preventive care.",
-    img: "../img/card4.jpg",
+    img: "/img/card4.jpg",
   },
   {
     title: "Dental Implants",
     desc: "Permanent tooth replacement solutions with lifelike implant options.",
-    img: "../img/card5.jpg",
+    img: "/img/card5.jpg",
   },
   {
     title: "Emergency Dental Care",
     desc: "Fast relief when you need it most—same-day visits available.",
-    img: "../img/card6.jpg",
+    img: "/img/card6.jpg",
   },
 ];
 

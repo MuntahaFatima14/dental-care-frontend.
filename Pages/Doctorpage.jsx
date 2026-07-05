@@ -7,14 +7,14 @@ import DoctorHeader from "../components/Doctorheader";
 export default function DoctorSignIn() {
   return (
      <div className="bg-grayish pt-7">
-    
-      <Header />
-       <Doctorpage />
-     <Footer/>
      
-
-   
+       <Header />
+        <Doctorpage />
+      <Footer/>
+      
+ 
     
-    </div>
+     
+     </div>
   );
 }

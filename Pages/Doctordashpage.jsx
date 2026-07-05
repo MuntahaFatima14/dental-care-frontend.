@@ -9,8 +9,8 @@ function Doctordashpage() {
     
       <Header />
        <Doctordashboard />
-     <Footer/>
-     
+      <Footer/>
+      
 
    
     

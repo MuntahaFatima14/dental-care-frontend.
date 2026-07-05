@@ -6,15 +6,15 @@ import Impactsection from "../components/Impactsection";
 export default function DoctorSignIn() {
   return (
      <div className="bg-grayish pt-7">
-    
-      <Header />
-       <Signin />
-       <Impactsection />
-     <Footer/>
      
-
-   
+       <Header />
+        <Signin />
+        <Impactsection />
+      <Footer/>
+      
+ 
     
-    </div>
+     
+     </div>
   );
 }

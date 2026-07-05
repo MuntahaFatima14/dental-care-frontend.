@@ -10,15 +10,15 @@ import Contactform from '../components/Contactform';
 function Homepage() {
   return (
      <div className="bg-grayish pt-7">
-       <Header />
-       <HeroSection />
-       <Impactsection />
-       <AIImpactSection />
-       <Ai_advantagessection />
-       <Contactform />
-       
-     <Footer/>
-    </div>
+        <Header />
+        <HeroSection />
+        <Impactsection />
+        <AIImpactSection />
+        <Ai_advantagessection />
+        <Contactform />
+        
+      <Footer/>
+     </div>
   );
 }
 

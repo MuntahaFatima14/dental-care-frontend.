@@ -8,13 +8,13 @@ import ServiceHelp from '../components/Servicehelp';
 function Servicepage() {
   return (
      <div className="bg-grayish pt-7">
-       <Header />
-       <Services />
-       <ServiceHelp />
-
-       
-     <Footer/>
-    </div>
+        <Header />
+        <Services />
+        <ServiceHelp />
+ 
+        
+      <Footer/>
+     </div>
   );
 }
 

@@ -5,7 +5,7 @@ import { HiEye, HiEyeOff } from "react-icons/hi";
 function Signupbody() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-  
+
   // Track state inputs
   const [formData, setFormData] = useState({
     username: "",
@@ -26,7 +26,8 @@ function Signupbody() {
     }
 
     try {
-      const response = await fetch("http://localhost:8000/api/register/", {
+      const apiBase = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
+      const response = await fetch(`${apiBase}/api/register/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -51,7 +52,7 @@ function Signupbody() {
 
   return (
     <div className="px-4 md:px-16 pb-10">
-      <h1 className="text-3xl font-bold mb-2 mt-10 text-center">For Doctor</h1>
+      <h1 className="text-3xl font-bold mb-2 mt-10 text-center"></h1>
 
       <div className="flex flex-col md:flex-row justify-center items-center lg:mx-auto lg:w-4/6 md:mx-0">
         {/* Left: Sign-up form */}
@@ -59,7 +60,7 @@ function Signupbody() {
           <form onSubmit={handleFormSubmit} className="bg-gray-50 px-8 py-10 rounded-lg w-full mb-5 max-w-sm mx-auto shadow-md">
             <h3 className="text-2xl font-bold font-Inter">Sign Up</h3>
             <p className="mb-4 text-xs text-gray-400"></p>
-            
+
             {/* Name Input */}
             <div className="relative mb-3">
               <input
@@ -132,7 +133,7 @@ function Signupbody() {
         {/* Right: Image */}
         <div className="flex justify-center w-full">
           <img
-            src="./img/pic10.jpeg"
+            src="/img/pic10.jpeg"
             alt="logo"
             className="SignUpImg w-60 h-60 md:w-80 md:h-80 borderrad borderstroke shadow-md"
           />

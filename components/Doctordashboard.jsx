@@ -2,6 +2,13 @@ import React, { useState, useEffect, useRef } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import DoctorProfileWidget from "./DoctorProfileWidget";
+
+const generateObjectId = () => {
+  const timestamp = Math.floor(Date.now() / 1000).toString(16).padStart(8, '0');
+  const randomChars = Array.from({ length: 16 }, () => Math.floor(Math.random() * 16).toString(16)).join('');
+  return timestamp + randomChars;
+};
 
 export default function PatientDashboard() {
   const location = useLocation();
@@ -16,17 +23,68 @@ export default function PatientDashboard() {
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const [imageScale, setImageScale] = useState({ scaleX: 1, scaleY: 1 });
 
-  const [patient, setPatient] = useState({
-    name: location.state?.patientInfo?.name || "Anonymous Patient",
-    age: location.state?.patientInfo?.age || "N/A",
-    symptoms: location.state?.patientInfo?.symptoms || "None provided"
-  });
-  
+  const getInitialState = () => {
+    if (location.state) {
+      const stateObj = {
+        patientInfo: location.state.patientInfo || {},
+        detectionResults: location.state.detectionResults || [],
+        imageFile: location.state.imageFile,
+        visitId: location.state.visitId || generateObjectId()
+      };
+      
+      // Store in sessionStorage to persist across refreshes
+      sessionStorage.setItem("doctor_dashboard_state", JSON.stringify({
+        patientInfo: stateObj.patientInfo,
+        detectionResults: stateObj.detectionResults,
+        visitId: stateObj.visitId
+      }));
+      
+      return stateObj;
+    }
+    
+    const cached = sessionStorage.getItem("doctor_dashboard_state");
+    if (cached) {
+      try {
+        const parsed = JSON.parse(cached);
+        return {
+          patientInfo: parsed.patientInfo,
+          detectionResults: parsed.detectionResults,
+          visitId: parsed.visitId,
+          imageFile: null
+        };
+      } catch (e) {
+        console.error("Failed to parse cached dashboard state:", e);
+      }
+    }
+    
+    return {
+      patientInfo: {
+        id: "",
+        name: "Anonymous Patient",
+        age: "N/A",
+        symptoms: "None provided"
+      },
+      detectionResults: [],
+      imageFile: null,
+      visitId: generateObjectId()
+    };
+  };
+
+  const initialState = getInitialState();
+  const visitId = initialState.visitId;
+
+  const [patient, setPatient] = useState(initialState.patientInfo);
   const [form, setForm] = useState({ medication: "", dosage: "", instructions: "", notes: "" });
 
-  const aiResults = location.state?.detectionResults || [];
-  const imageFile = location.state?.imageFile;
+  const aiResults = initialState.detectionResults || [];
+  const imageFile = initialState.imageFile;
   const annotatedImageFromServer = aiResults[0]?.annotated_image;
+
+  // Retrieve authenticated doctor's name
+  const storedDoctorName = localStorage.getItem("doctor_name") || "Jennie";
+  const formattedDoctorName = storedDoctorName.toLowerCase().startsWith("dr.") 
+    ? storedDoctorName 
+    : `Dr. ${storedDoctorName.charAt(0).toUpperCase() + storedDoctorName.slice(1)}`;
 
   // --- DYNAMIC BOUNDING BOX WINDOW RESPONSIVENESS SCALING ENGINE ---
   // Calculates real-time ratios if your raw image is e.g. 2000px wide but rendered down to 400px wide on-screen
@@ -76,7 +134,8 @@ export default function PatientDashboard() {
 
   const saveToMongoDB = async () => {
     const compiledPayload = {
-      patient_id: id || "1",
+      _id: visitId,
+      patient_id: patient.id || "1",
       patient_name: patient.name,
       age: patient.age,
       symptoms: patient.symptoms,
@@ -89,15 +148,22 @@ export default function PatientDashboard() {
     };
 
     try {
-      const response = await fetch("http://localhost:8000/api/save-assessment/", {
+      const apiBase = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
+      const token = localStorage.getItem("doctor_token");
+      const response = await fetch(`${apiBase}/api/save-assessment/`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          ...(token ? { "Authorization": `Bearer ${token}` } : {})
+        },
         body: JSON.stringify(compiledPayload)
       });
       if (response.ok) {
         alert("Success: Medical record successfully synced to your MongoDB Cloud Cluster!");
       } else {
-        alert("Server rejected document formatting properties.");
+        const errorData = await response.json().catch(() => ({}));
+        const errorMessage = errorData.error || errorData.detail || "Server rejected document formatting properties.";
+        alert(`Error: ${errorMessage}`);
       }
     } catch (err) {
       console.error("MongoDB Cloud Sync Failure:", err);
@@ -111,7 +177,8 @@ export default function PatientDashboard() {
       if (aiResults.length > 0) {
         const topFinding = aiResults[0].disease; 
         try {
-          const treatmentRes = await fetch("http://localhost:8000/api/automate-prescription/", {
+          const apiBase = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
+          const treatmentRes = await fetch(`${apiBase}/api/automate-prescription/`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ disease: topFinding })
@@ -158,6 +225,12 @@ export default function PatientDashboard() {
     <div className={`min-h-screen w-full flex flex-col items-center transition-all ${isGeneratingPDF ? "bg-white p-0" : "bg-gray-100 p-6"}`}>
       
       {!isGeneratingPDF && (
+        <div className="w-full max-w-4xl flex justify-end mb-4">
+          <DoctorProfileWidget />
+        </div>
+      )}
+
+      {!isGeneratingPDF && (
         <h1 className="text-3xl font-bold text-center mb-6 mt-6 text-gray-800 font-sans">
           Clinical Management Terminal
         </h1>
@@ -181,7 +254,7 @@ export default function PatientDashboard() {
             </p>
           </div>
           <div className="text-right text-xs text-gray-400 font-sans leading-relaxed">
-            <p className="font-semibold text-gray-600">Report ID: #DC-{id || "849204"}</p>
+            <p className="font-semibold text-gray-600">Report ID: #DC-{visitId}</p>
             <p>Date: {new Date().toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}</p>
           </div>
         </div>
@@ -366,6 +439,7 @@ export default function PatientDashboard() {
         {/* Formal Attending Physician Endorsement Block */}
         <div className="mt-14 flex justify-end">
           <div className="text-center w-64 border-t border-gray-300 pt-2">
+            <p className="font-serif text-lg italic text-[#5B8AA0] mb-1">{formattedDoctorName}</p>
             <p className="font-sans text-xs font-bold text-gray-700 uppercase tracking-widest">Digital Verification signature</p>
             <p className="font-sans text-[10px] text-gray-400 mt-0.5">Attending Dental Practitioner Node</p>
           </div>
