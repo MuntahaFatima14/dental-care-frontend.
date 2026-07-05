@@ -5,7 +5,7 @@ import Footer from "../components/Footer"
 import Body from "../components/Signin"
 import DoctorSignIn from "../Pages/DoctorSignin"
 import DoctorSignUp from "../Pages/DoctorSignUp";
-import Homepage from "../Pages/homepage";
+import Homepage from "../Pages/Homepage";
 import Servicepage from "../Pages/Servicespage";
 import Doctorpage from "../Pages/Doctorpage";
 import PatientSearchCreatePage from "../Pages/PatientSearchCreatePage";
